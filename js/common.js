@@ -15,7 +15,7 @@ $("#chk_all_del").click(function () {
     $('.chk_del').not(this).prop('checked', this.checked);
 });
 
-
+//client phone number
 $('body').on('click', '#app_ph', function () {
     var html = '';
     var html = html + '<div class="form-group">';
