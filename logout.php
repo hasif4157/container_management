@@ -1,0 +1,9 @@
+<?php
+session_start();
+unset($_SESSION['loggedin']);
+unset($_SESSION['uname']);
+unset($_SESSION['branch']);
+unset($_SESSION['user_role']);
+header('location:login.php');
+exit;
+?>

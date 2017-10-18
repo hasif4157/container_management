@@ -1,0 +1,4 @@
+[13-Jul-2017 11:54:26 Asia/Dubai] PHP Fatal error:  Cannot redeclare PHPMailerAutoload() (previously declared in /home/demosoftwarecomp/public_html/container/PHPMailer/PHPMailerAutoload.php:24) in /home/demosoftwarecomp/public_html/container/PHPMailer/PHPMailerAutoload.php on line 24
+[15-Jul-2017 12:03:26 UTC] PHP Parse error:  syntax error, unexpected '"' in /home/demosoftwarecomp/public_html/container/awb_pdf.php on line 110
+[10-Sep-2017 13:27:03 UTC] PHP Parse error:  syntax error, unexpected end of file, expecting variable (T_VARIABLE) or ${ (T_DOLLAR_OPEN_CURLY_BRACES) or {$ (T_CURLY_OPEN) in /home/demosoftwarecomp/public_html/container/process_add_order.php on line 52
+[10-Sep-2017 13:27:35 UTC] PHP Parse error:  syntax error, unexpected end of file, expecting variable (T_VARIABLE) or ${ (T_DOLLAR_OPEN_CURLY_BRACES) or {$ (T_CURLY_OPEN) in /home/demosoftwarecomp/public_html/container/process_add_order.php on line 52

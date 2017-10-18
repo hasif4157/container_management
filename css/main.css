@@ -1,0 +1,247 @@
+/*----------------------------------------------------------------------
+	MASTER STYLESHEET
+	Project:        sensation
+	Author:         vineesh
+	Primary use:    Corporate.
+/*------------------------------------------------------------------
+  	[The "main.css" contains basic default element styles
+  		(colors, typography, margins & padding).]
+------------------------------------------------------------------*/
+.red{
+    
+    color:#e31d2d !important;
+}
+.qut{    float: left;
+	width: 16.4%;
+        margin-right: 5px;
+}
+.qut1{    float: left;
+    width: 35%;
+        margin-right: 5px;
+            background: #efefef;
+}
+.form-group.form-md-line-input.has-success .form-control {
+    border: 1px solid rgba(43, 54, 67, 0.34);
+    padding: 5px;
+}
+.btn.green:not(.btn-outline) {
+   
+    margin-top: 0px;
+}
+.form-group.form-md-line-input {
+    position: relative;
+    margin: 0 0 5px;
+    padding-top: 20px;
+}
+.disnone{
+    display:none !important;
+}
+.font13 {
+    font-size:10px !important;
+}
+.wid300{
+    width:300px !important;
+}
+.mrg15 {
+    margin-right:15px !important;
+}
+.mrg_right10 {
+    margin-right:10px !important;
+}
+.mrg_top10{
+    margin-top:10px !important;
+}
+.pdright5{
+    padding-right:5px !important;
+}
+.bt {
+    background: none;
+    color: #555;
+    border: solid 1px #b6babf;
+    margin-top: 6px;
+        width: 100%;
+}
+#exampleModal {
+    width: 600px !important;
+    background: none;
+    box-shadow: none;
+    border: none;
+}
+
+/**************suraj*****************/
+
+#calendar_details .dropdown {
+	background: #f1f1f1;
+	color:#000;
+	font-weight: bold;
+	border:none;
+	font-size: 14px;
+}
+#calender_section .btn-group-solid {
+	margin: -12px 0 0 0;
+}
+.page-header.navbar .page-logo {
+	background: #fff !important;
+}
+.page-sidebar .page-sidebar-menu>li>a {
+	color:#fff;
+	font-size:15px;
+}
+.page-sidebar .page-sidebar-menu>li.heading>h3 {
+	color:#fff;
+	font-size:15px;
+	font-weight:bold;
+}
+.page-header.navbar {
+	background-color: #0072bb;
+}
+.page-sidebar.collapse {
+	display: block;
+	max-height: none!important;
+	background: #003470;
+}
+.page-footer {
+	clear: left;
+	background: #0072bb;
+}
+.page-container {
+	background: #d4d4d4;
+}
+.page-sidebar .page-sidebar-menu>li {
+	line-height: 30px;
+}
+
+/*******************suraj***************/
+.page-title {
+    font-variant: small-caps;
+    font-size: 1.4em;
+    border-bottom: 2px solid #5D9B9B;
+    font-weight: 600;
+    width: 99%;
+    padding: 0px 0px 5px 5px;
+    margin-bottom: 5px;
+    color: #23282B;
+}
+.contain-input {
+    margin:0 0 0 1px !important;;
+}
+.span-div-one {
+    margin: 0 10px 0 0;
+    width: 48%;
+}
+.submit-span-bottom {
+    margin:0 0 0 17px;
+}
+.date-time-span {
+    height: 34px ;
+    width: 97%;
+}
+.container-main-div-sec .add-on {
+    position:absolute;
+    right:0;
+    left:0;
+}
+.headings-sec h4 {
+    font-size:15px;
+    font-weight:bold;
+    text-transform:uppercase;
+}
+
+
+/*********invoice page*********/
+.in-img-bottom-detail h1 {
+    color:#000;
+    font-weight:bold;
+    margin:0;
+    padding:0;
+    font-family: 'Open Sans', sans-serif;
+}
+.in-img-bottom-detail p {
+    color:#000;
+    font-weight:bold;
+    margin:0;
+    padding:0;
+    font-family: 'Open Sans', sans-serif;
+}
+.in-img-bottom-detail ul {
+    list-style:none;
+    margin:30px 0 0 0;
+    padding:0;
+}
+.in-img-bottom-detail ul li {
+    margin:0;
+    padding:0;
+    font-family: 'Open Sans', sans-serif; 
+}
+.right-invoice-table tr td {
+    background:#f3f3f3;
+    height:35px;
+    border: 1px solid #003470;
+}
+.right-invoice-table table {
+    width:99%;
+}
+.top-invoice-detail {
+    background: #f3f3f3;
+    padding:20px 0 20px 0;
+    margin:20px 0 0 ;
+}
+.span-one-color {
+    background-color: #23a9b1 !important;
+    color:#fff;
+}
+.span-one-color-c {
+    background-color: #2edae4 !important;
+    color:#fff;
+}
+.div-Main-invoice-section {
+    border: 1px solid #0072bb;
+    padding: 10px 10px 10px 10px;  
+    min-height:1600px;
+}
+.code-view {
+    margin: 0 auto;
+    text-align: center;
+    padding: 12px 0 0 0;   
+}
+.code-view p {
+    color:#000;
+    font-weight:bold;
+    margin:0;
+    padding:0;
+    font-family: 'Open Sans', sans-serif;  
+}
+.code-view p span {
+    color:#000;
+    font-weight:bold;
+    margin:0;
+    padding:0;
+    font-family: 'Open Sans', sans-serif;
+    font-size:20px; 
+}
+.main-botttom-table {
+    height:30px;
+    padding: 25px 0 0 0;
+}
+.caption {
+    text-align:center;
+}
+.terms-div-main h2 {
+    text-align: center;
+    color: #000;
+    font-weight: bold;
+    margin: 0;
+    padding: 0;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 20px;
+    background: #32c5d2;
+    height: 37px;
+    line-height: 35px;
+    color: #fff;
+}
+.color-td {
+    background:#f5f4f4;
+}
+
+/*********invoice page*********/
+/*******************suraj design ***************/
