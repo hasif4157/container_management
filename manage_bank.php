@@ -4,7 +4,7 @@ include('header.php');
 $database=new database();
 ?>
 
-
+<upendra>Tag Missing</upendra>
 
 <!-- END SIDEBAR -->
 <!-- BEGIN CONTENT -->
@@ -82,13 +82,13 @@ $database=new database();
                             <td id="delid_<?=$id?>"><?= $row_bank[$i]->naira_acc; ?></td>
                             
                              <?php
-                                    $sql_orpr = mysqli_query($conn, "SELECT * from crm_owner where id='" .$_SESSION['user_id']. "'");
-                                    $res_orpr = mysqli_fetch_array($sql_orpr);
+                                    $sql_orpr = "SELECT * from crm_owner where id='" .$_SESSION['user_id']. "'";
+                                    $res_orpr = $database->select_query_array($sql_orpr);
                                     $view_or = "disnone";
                                     $edit_or = "disnone";
                                     $delete_or = "disnone";
                                     $privilege_array = '';
-                                    $privilege_explode = explode(",", $res_orpr['privileges']);
+                                    $privilege_explode = explode(",", $res_orpr[0]->privileges);
                                     for ($j = 0; $j <= 44; $j++) {
                                         if (!empty($privilege_explode[$j])) {
                                             if ($privilege_explode[$j] == 24) {

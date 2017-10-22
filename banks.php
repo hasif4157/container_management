@@ -1,6 +1,7 @@
 <?php
 include('config/dbconn.php');
 include('header.php');
+$database=new database();
 ?>
 
 <!-- END SIDEBAR -->
@@ -27,13 +28,7 @@ include('header.php');
                     <span>Bank</span>
                 </li>
             </ul>
-            <div class="page-toolbar">
-                <div id="dashboard-report-range" class="pull-right tooltips btn btn-sm" data-container="body" data-placement="bottom" data-original-title="Change dashboard date range">
-                    <i class="icon-calendar"></i>&nbsp;
-                    <span class="thin uppercase hidden-xs"></span>&nbsp;
-                    <i class="fa fa-angle-down"></i>
-                </div>
-            </div>
+         
         </div>
         <!-- END PAGE BAR -->
         <!-- BEGIN PAGE TITLE-->
@@ -45,7 +40,7 @@ include('header.php');
         <!-- BEGIN DASHBOARD STATS 1-->
 
         <div class="row">
-            <form method="POST" action="" accept-charset="UTF-8" class="form-horizontal" id="add_bank" enctype="multipart/form-data">
+            
                 <div class="col-md-6">
                     <!-- BEGIN SAMPLE FORM PORTLET-->
                     <div class="portlet light bordered">
@@ -56,9 +51,7 @@ include('header.php');
                                 <div class="form-group">
                                     <label>Name</label>
                                     <div class="input-group">
-                                        <span class="input-group-addon">
-                                            <i class="fa fa-university" aria-hidden="true"></i>
-                                        </span>
+                                        
                                         <input type="text" id="bank_name" name="bank_name" class="form-control" placeholder="Enter Name"> </div>
                                 </div>
 
@@ -66,43 +59,35 @@ include('header.php');
 
                                 <div class="form-group">
                                     <label>Address</label>
-                                    <textarea class="form-control" name="bank_addr" rows="3"></textarea>
+                                    <textarea class="form-control" id="bank_addr" name="bank_addr" rows="3"></textarea>
                                 </div>
 
                                 <div class="form-group">
                                     <label>Branch Name</label>
                                     <div class="input-group">
-                                        <span class="input-group-addon">
-                                            <i class="fa fa-university" aria-hidden="true"></i>
-                                        </span>
-                                        <input type="text" id="branch_name" name="branch_name" class="form-control" placeholder="Enter Name"> </div>
+                                        
+                                        <input type="text" id="branch_name" name="branch_name" class="form-control" placeholder="Enter Branch Name"> </div>
                                 </div>
 
                                 <div class="form-group">
                                     <label>Sort Code</label>
                                     <div class="input-group">
-                                        <span class="input-group-addon">
-                                            <i class="fa fa-sort" aria-hidden="true"></i>
-                                        </span>
-                                        <input type="text" name="sort_code" class="form-control" placeholder="Sort Code"> </div>
+                                        
+                                        <input type="text" name="sort_code" id="sort_code" class="form-control" placeholder="Sort Code"> </div>
                                 </div>
 
                                 <div class="form-group">
                                     <label>Dollar Account Number</label>
                                     <div class="input-group">
-                                        <span class="input-group-addon">
-                                            <i class="fa fa-money" aria-hidden="true"></i>
-                                        </span>
-                                        <input type="text" name="dollar_acc" class="form-control" placeholder="Dollar Account Number"> </div>
+                                        
+                                        <input type="text" name="dollar_acc" id="dollar_acc" class="form-control" placeholder="Dollar Account Number"> </div>
                                 </div>
 
                                 <div class="form-group">
                                     <label>Naira Account Number</label>
                                     <div class="input-group">
-                                        <span class="input-group-addon">
-                                            <i class="fa fa-money" aria-hidden="true"></i>
-                                        </span>
-                                        <input type="text" name="naira_acc" class="form-control" placeholder="Naira Account Number"> </div>
+                                       
+                                        <input type="text" name="naira_acc" id="naira_acc" class="form-control" placeholder="Naira Account Number"> </div>
                                 </div>
 
 
@@ -110,7 +95,7 @@ include('header.php');
 
 
                                 <div class="form-actions">
-                                    <button type="submit" class="btn blue">Submit</button>
+                                    <button type="submit" id="add_bank" class="btn blue">Submit</button>
                                     <button type="button" class="btn default">Cancel</button>
                                 </div>
 
@@ -130,7 +115,7 @@ include('header.php');
 
                     </div>
                 </div>
-            </form>
+          
             <!-- END DASHBOARD STATS 1-->
 
 
@@ -139,10 +124,7 @@ include('header.php');
 
 
         </div>
-        <div id="prefix_1241741341198" class="add_bank custom-alerts alert alert-success fade in" style="display:none;">
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
-            Bank Details Added Successfully
-        </div>
+        
         <!-- END CONTENT BODY -->
     </div>
     <!-- END CONTENT -->
@@ -159,53 +141,73 @@ include('footer.php');
 
 <script>
 
-    $('#add_bank').submit(function (e) {
-        e.preventDefault();
-        if ($('#bank_name').val() == '') {
-            $('#bank_name').css({'border': '1px solid red'});
-            $('#bank_name').focus();
-        } else if ($('#branch_name').val() == '') {
-            $('#branch_name').css({'border': '1px solid red'});
-            $('#branch_name').focus();
-        } else {
-            var data = new FormData(this); // <-- 'this' is your form element
-        Lobibox.confirm({
+   $('#add_bank').on('click', function(){
+       var bank_name = $('#bank_name').val();
+       var bank_addr = JSON.stringify($('#bank_addr').val());//convert special charecters as string to parse
+       var branch_name = $('#branch_name').val();
+       var sort_code = $('#sort_code').val();
+       var dollar_acc = $('#dollar_acc').val();
+       var naira_acc = $('#naira_acc').val();
+       
+       if(bank_name == ''){
+           $('#bank_name').css('border','1px solid red');
+           $('#bank_name').focus();
+       }
+       else if($('#bank_addr').val() == ''){
+           $('#bank_name').css('border','1px solid #ccc');
+           $('#bank_addr').css('border','1px solid red');
+           $('#bank_addr').focus();
+       }
+       else if(branch_name == ''){
+           $('#bank_addr').css('border','1px solid #ccc');
+           $('#branch_name').css('border','1px solid red');
+           $('#branch_name').focus();
+       }
+       
+       else {
+       var json='';
+       json = json + '{';
+       json = json + '"bank_name":"'+bank_name+'",';
+       json = json + '"bank_addr":'+bank_addr+',';
+       json = json + '"branch_name":"'+branch_name+'",';
+       json = json + '"sort_code":"'+sort_code+'",';
+       json = json + '"dollar_acc":"'+dollar_acc+'",';
+       json = json + '"naira_acc":"'+naira_acc+'"';
+       json = json + '}';
+     
+      Lobibox.confirm({
             iconClass: false,
-            msg: 'Are you sure you want to add the Bank Details?',
+            msg: 'Are you sure you want to add bank details?',
             title: 'Add Bank Details',
             callback: function ($this, type, e) {
                 if (type == 'yes') {
-                    $('div#divLoading').addClass('show');
                     $.ajax({
-                        url: 'process_add_bank.php'
-                        , data: data
-                        , cache: false
-                        , contentType: false
-                        , processData: false
-                        , type: 'POST'
-                        , success: function (data) {
-                            $('#divLoading').removeClass('show');
-                            if(data == 1){
-                    Lobibox.notify('success', {
-                        delay: false,
-                        sound: true,
-                         closeOnEsc:  window.setTimeout(function(){
-window.location.href = "manage_bank.php";
+                        url: "process_add_bank.php",
+                        async: true,
+                        type: 'POST',
+                        data: "json=" + encodeURIComponent(json),
+                        success: function (data) {
+                           if (data == 1) {
+                                Lobibox.notify('success', {
+                                    delay: false,
+                                    sound: true,
+                                    closeOnEsc: window.setTimeout(function () {
+                                        window.location.href = "manage_bank.php";
 
-    }, 2000),
-                       
-                        title: 'Success',
-                        msg: 'Success Message : Bank Added Successfully' 
-                    });
-                }
+                                    }, 2000),
+                                    title: 'Success',
+                                    msg: 'Success Message : Bank Added Successfully'
+                                });
+                            }
+
                         }
                     });
                 }
             }
         });
-    }
-        return false;
-    });
+   }
+       
+   });
 </script>
 </body>
 
