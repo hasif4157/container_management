@@ -50,9 +50,12 @@ require_once('settings.php');
         <!-- END THEME LAYOUT STYLES -->
         <link rel="shortcut icon" href="favicon.ico" /> 
 
-        <link href="css/bootstrap-datetimepicker.min.css" rel="stylesheet" media="screen">
+        <link href="css/Redirecting.css" rel="stylesheet" media="screen">
         <script src="js/jscolor.js"></script>
-      
+      <style> 
+   .ui-datepicker-month,.ui-datepicker-year{    
+       color: black;  
+   }</style>
         <style>
             #divLoading {
                 display: none;
@@ -372,13 +375,13 @@ for ($sj = 0; $sj <= 44; $sj++) {
                             <li class="nav-item <?= $side_cont ?>">
                                 <a href="javascript:;" class="nav-link nav-toggle">
                                     <i class="fa fa-ship" aria-hidden="true"></i>
-                                    <span class="title">View Warehouse</span>
+                                    <span class="title">View warehouse</span>
                                     <span class="arrow"></span>
                                 </a>
                                 <ul class="sub-menu">
                                     <li class="nav-item">
-                                        <a href="wharehouse.php" class="nav-link">
-                                            <span class="title">View Warehouse</span>
+                                        <a href="warehouse.php" class="nav-link">
+                                            <span class="title">View warehouse</span>
                                         </a>
                                     </li>
                                 </ul>

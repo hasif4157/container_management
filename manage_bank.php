@@ -1,6 +1,7 @@
 <?php
 require_once('settings.php');
 include('header.php');
+$database=new database();
 ?>
 
 
@@ -65,18 +66,20 @@ include('header.php');
                     <?php
                     $slno = 1;
                     $sql_bank = "SELECT * FROM ex_bank ORDER BY id desc";
-                    $qry_bank = mysqli_query($conn, $sql_bank);
-                    while ($row_bank = $qry_bank->fetch_assoc()) {
-                        $id = $row_bank['id'];
+                    $num_bk=$database->rows($sql_bank);
+                    $row_bank = $database->select_query_array($sql_bank);
+                    if($num_bk>0){
+                    for($i=0;$i<count($row_bank);$i++) {
+                        $id = $row_bank[$i]->id;
                         
                         ?>
                     <tr id="delid_<?=$id?>" class="text-center">
                             <td id="delid_<?=$id?>"><?= $slno; ?></td>
-                            <td id="delid_<?=$id?>"><?= $row_bank['bank_name']; ?></td>
-                            <td id="delid_<?=$id?>"><?= $row_bank['bank_addr']; ?></td>
-                            <td id="delid_<?=$id?>"><?= $row_bank['branch_name']; ?></td>
-                            <td id="delid_<?=$id?>"><?= $row_bank['dollar_acc']; ?></td>
-                            <td id="delid_<?=$id?>"><?= $row_bank['naira_acc']; ?></td>
+                            <td id="delid_<?=$id?>"><?= $row_bank[$i]->bank_name; ?></td>
+                            <td id="delid_<?=$id?>"><?= $row_bank[$i]->bank_addr; ?></td>
+                            <td id="delid_<?=$id?>"><?= $row_bank[$i]->branch_name; ?></td>
+                            <td id="delid_<?=$id?>"><?= $row_bank[$i]->dollar_acc; ?></td>
+                            <td id="delid_<?=$id?>"><?= $row_bank[$i]->naira_acc; ?></td>
                             
                              <?php
                                     $sql_orpr = mysqli_query($conn, "SELECT * from crm_owner where id='" .$_SESSION['user_id']. "'");
@@ -116,7 +119,7 @@ include('header.php');
 
                         </tr>
                         <?php $slno++;
-                    } ?>
+                    }} ?>
                 </tbody>
             </table>
 </div>

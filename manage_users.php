@@ -1,5 +1,7 @@
 <?php
+require_once('settings.php');
 include('header.php');
+$database=new database();
 ?>
 
 
@@ -66,27 +68,28 @@ include('header.php');
         <tbody>
                     <?php
                     $slno = 1;
-                    $sql_user = "SELECT U.*,E.emp_type FROM crm_owner U LEFT JOIN emp_type E ON E.id=U.employee ORDER BY id desc";
-                    $qry_user = mysqli_query($conn, $sql_user);
-                    while ($row_user = $qry_user->fetch_assoc()) {
-                        $id = $row_user['id'];
+                    $sql_user = "SELECT C.*,E.emp_type FROM crm_owner C LEFT JOIN emp_type E ON E.id=C.employee  ORDER BY C.id desc";
+                    $num_rows=$database->rows($sql_user);
+                    $row_user=$database->select_query_array($sql_user);
+                    for($i=0;$i<count($row_user);$i++){
+                        $id = $row_user[$i]->id;
                         ?>
                         <tr id="delid_<?=$id?>">
                             <td id="delid_<?=$id?>"><?= $slno; ?></td>
-                            <td id="delid_<?=$id?>"><?= $row_user['user_name']; ?></td>
-                            <td id="delid_<?=$id?>"><?= $row_user['user_email']; ?></td>
-                            <td id="delid_<?=$id?>"><?= $row_user['user_desc']; ?></td>
-                            <td id="delid_<?=$id?>"><?= $row_user['domain_name']; ?></td>
-                            <td id="delid_<?=$id?>"><?= $row_user['emp_type']; ?></td>
+                            <td id="delid_<?=$id?>"><?= $row_user[$i]->user_name; ?></td>
+                            <td id="delid_<?=$id?>"><?= $row_user[$i]->user_email; ?></td>
+                            <td id="delid_<?=$id?>"><?= $row_user[$i]->user_desc; ?></td>
+                            <td id="delid_<?=$id?>"><?= $row_user[$i]->domain_name; ?></td>
+                            <td id="delid_<?=$id?>"><?= $row_user[$i]->emp_type; ?></td>
                             
                             <?php
-                                    $sql_orpr = mysqli_query($conn, "SELECT * from crm_owner where id='" .$_SESSION['user_id']. "'");
-                                    $res_orpr = mysqli_fetch_array($sql_orpr);
+                                    $sql_orpr = "SELECT * from crm_owner where id='" .$_SESSION['user_id']. "'";
+                                    $res_orpr = $database->select_query_array($sql_orpr);
                                     $view_or = "disnone";
                                     $edit_or = "disnone";
                                     $delete_or = "disnone";
                                     $privilege_array = '';
-                                    $privilege_explode = explode(",", $res_orpr['privileges']);
+                                    $privilege_explode = explode(",", $res_orpr[0]->privileges);
                                     for ($j = 0; $j <= 44; $j++) {
                                         if (!empty($privilege_explode[$j])) {
                                             if ($privilege_explode[$j] == 15) {
@@ -106,9 +109,15 @@ include('header.php');
                                     <i class="fa fa-edit"></i>
                                 </a>
 
-                                <a href="javascript:;" class="delete <?= $edit_or?>" id="<?= $id; ?>" onClick="delete_row('<?= $id; ?>')">
-                                    <i class="fa fa-trash-o fa_font" aria-hidden="true"></i>
-                                </a>
+                                 <?php if ($row_user[$i]->status == 1) { ?>
+                                    <a href="javascript:;" class="delete <?= $edit_or ?>" id="<?= $id ?>" onClick="disable_row('<?= $id ?>')" title="Disable User">
+                                        <i class="fa fa-check-square-o fa_font" aria-hidden="true"></i>
+                                    </a>    
+                                <?php } if ($row_user[$i]->status == 0) { ?>
+                                    <a href="javascript:;" class="delete <?= $edit_or ?>" id="<?= $id ?>" onClick="enable_row('<?= $id ?>')" title="Enable User">
+                                        <i class="fa fa-ban fa_font text-danger" aria-hidden="true"></i>
+                                    </a> 
+                                <?php } ?>
 
                                 <a href="viewUser.php?id=<?=$id;?>" class="delete <?= $delete_or?>" id="<?=$id?>">
                                     <i class="fa fa-eye" aria-hidden="true"></i>
@@ -143,25 +152,67 @@ include('footer.php');
 
 $('#password-1').hidePassword(true);
 
-function delete_row(id) {
+function disable_row(id) {
 
-        var del_id = id;
+        var des_id = id;
+        var status="disable_user";
+        
         var url = 'deleteUser.php';
         Lobibox.confirm({
             iconClass: false,
-            msg: 'Are you sure you want to delete the User?',
-            title: 'Delete User',
+            msg: 'Are you sure you want to disable the User?',
+            title: 'Disable User',
             callback: function ($this, type, e) {
                 if (type == 'yes') {
                     
-                    $.post(url,{del_id:del_id}, function(data){
-                     $('#delid_'+id).hide(2000);
-                       window.setTimeout(function(){
+                    $.post(url,{des_id:des_id,status:status}, function(data){
+                   
+                     if (data == 1) {
+                                Lobibox.notify('success', {
+                                    delay: false,
+                                    sound: true,
+                                    closeOnEsc: window.setTimeout(function () {
+                                        window.location.href = "manage_users.php";
 
-        // Move to a new location or you can do something else
-     location.reload();
+                                    }, 2000),
+                                    title: 'Success',
+                                    msg: 'Success Message : User Disabled Successfully'
+                                });
+                            }
 
-    }, 2100);
+                    });
+                }
+            }
+        });
+    }
+    
+function enable_row(id) {
+
+        var enb_id = id;
+        var status="enable_user";
+        
+        var url = 'deleteUser.php';
+        Lobibox.confirm({
+            iconClass: false,
+            msg: 'Are you sure you want to enable the User?',
+            title: 'Enable User',
+            callback: function ($this, type, e) {
+                if (type == 'yes') {
+                    
+                    $.post(url,{enb_id:enb_id,status:status}, function(data){
+                   
+                     if (data == 1) {
+                                Lobibox.notify('success', {
+                                    delay: false,
+                                    sound: true,
+                                    closeOnEsc: window.setTimeout(function () {
+                                        window.location.href = "manage_users.php";
+
+                                    }, 2000),
+                                    title: 'Success',
+                                    msg: 'Success Message : User Enabled Successfully'
+                                });
+                            }
 
                     });
                 }

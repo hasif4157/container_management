@@ -7,34 +7,28 @@ if(isset($_REQUEST['json'])){
     $array=json_decode($json, true);
     if($array){
         
-       $ins_order=[
+       $ins_container=[
             'created'=>$date,
             'created_time'=>$time,
             'modified'=>$date,
             'modified_time'=>$time,
-            'user_id'=>$array['user_id'],
-            'order_no'=>$array['order_no'],
-            'order_date'=>$array['order_date'],
-            'agent_id'=>$array['agent_id'],
             'container_id'=>$array['container_id'],
-            'fr_loc'=>$array['fr_loc'],
-            'to_loc'=>$array['to_loc'],
-            'cus_id'=>$array['cus_id'],
-            'bank_id'=>$array['bank_id'],
-            'item_desc'=>$array['item_desc'],
-            'line'=>$array['line'],
-            'or_qty'=>$array['or_qty'],
-            'agn_freight'=>$array['agn_freight'],
-            'comp_freight'=>$array['comp_freight'],
-            'comn_freight'=>$array['comn_freight'],
-            'agn_clearence'=>$array['agn_clearence'],
-            'comp_clearence'=>$array['comp_clearence'],
-            'comn_clearence'=>$array['comn_clearence'],
-            'paid_amt'=>$array['paid_amt']
+            'desn_off'=>$array['desn_off'],
+            'sail_date'=>$array['sail_date'],
+            'origin_port'=>$array['origin_port'],
+            'desn_port'=>$array['desn_port'],
+            'exp_date'=>$array['exp_date'],
+            'org_date'=>$array['org_date'],
+            'exp_off'=>$array['exp_off'],
+            'desn_date'=>$array['desn_date'],
+            'con_status'=>$array['con_status'],
+            'con_size'=>$array['con_size'],
+            'clr_agninfo'=>$array['clr_agninfo'],
+            'status'=>1
             ];
         
         
-      $res=$database->insert('ex_order', $ins_order);
+      $res=$database->insert('ex_container', $ins_container);
       if($res){
           echo 1;
       }

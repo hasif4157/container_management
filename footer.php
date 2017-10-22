@@ -82,43 +82,64 @@
 <script src="css/lobibox/lobibox.js"></script> 
 <script src="js/bootstrap-select.js"></script> 
 <script src="js/bootstrap-show-password.min.js"></script> 
-<script type="text/javascript" src="js/bootstrap-datetimepicker.js" charset="UTF-8"></script>
-<script type="text/javascript" src="js/bootstrap-datetimepicker.fr.js" charset="UTF-8"></script>
+<script type="text/javascript" src="js/jquery-ui.js" charset="UTF-8"></script>
+
 <script type="text/javascript">
+      $(function () {
+       var d = new Date().getFullYear() + 2;
+       var date_pic_obg_dsb = {dateFormat: 'yy-mm-dd', changeMonth: true, changeYear: true, minDate: +0, yearRange: '1950:' + d};
+       var date_pic_obg = {dateFormat: 'yy-mm-dd', changeMonth: true, changeYear: true, yearRange: '1950:' + d};
+       $('body').on('click', '.datepicker_dsb', function () {
+           $(this).datepicker(date_pic_obg_dsb).focus();
+           $(this).removeClass('datepicker');
+       });
+
+       $('body').on('click', '.datepicker', function () {
+           $(this).datepicker(date_pic_obg).focus();
+           $(this).removeClass('datepicker');
+       });
+   });
+   
+   
+    $('body').on('click', '.date', function () {
+        $(this).datetimepicker({
+            language: 'ru',
+            weekStart: 1,
+            todayBtn: 1,
+            autoclose: 1,
+            todayHighlight: 1,
+            startView: 2,
+            minView: 2,
+            forceParse: 0
+        });
+        $(this).removeClass('datepicker');
+    });
+
     $('.form_datetime').datetimepicker({
         //language:  'fr',
         weekStart: 1,
-        todayBtn:  1,
-		autoclose: 1,
-		todayHighlight: 1,
-		startView: 2,
-		forceParse: 0,
+        todayBtn: 1,
+        autoclose: 1,
+        todayHighlight: 1,
+        startView: 2,
+        forceParse: 0,
         showMeridian: 1
     });
-	$('.form_date').datetimepicker({
-        language:  'ru',
+
+    $('.form_time').datetimepicker({
+        language: 'ru',
         weekStart: 1,
-        todayBtn:  1,
-		autoclose: 1,
-		todayHighlight: 1,
-		startView: 2,
-		minView: 2,
-		forceParse: 0
-    });
-	$('.form_time').datetimepicker({
-        language:  'ru',
-        weekStart: 1,
-        todayBtn:  1,
-		autoclose: 1,
-		todayHighlight: 1,
-		startView: 1,
-		minView: 0,
-		maxView: 1,
-		forceParse: 0
+        todayBtn: 1,
+        autoclose: 1,
+        todayHighlight: 1,
+        startView: 1,
+        minView: 0,
+        maxView: 1,
+        forceParse: 0
     });
 </script>
 <script type="text/javascript">
-	$("#password").password('toggle');
+    $("#password").password('toggle');
 </script>
 
 <!-- END THEME LAYOUT SCRIPTS -->

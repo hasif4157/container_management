@@ -92,7 +92,7 @@ include('header.php');
 
       <div class=" ">
 			<div class="top_filer_section">
-			<h5>Wharehouse Add</h5>
+			<h5>Warehouse</h5>
 								<table cellspacing="0" cellpadding="0">
 				  <tr>
 					<td>

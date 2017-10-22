@@ -1,16 +1,36 @@
 <?php
 	require_once('settings.php');
-   
-	if($_POST['del_id'])
+        $database=new database();
+	if($_POST['status']=="disable_user")
 	{
-	$id=$_POST['del_id'];
-	$sql_user ="delete from crm_owner where id='$id'";
-	$qry_user = $conn->query($sql_user);
-        if($qry_user){
+	
+        $up_arr=[ 
+            'modified'=>$date,
+            'modified_time'=>$time,
+            'status'=>0
+        ];
+        $condtn="id='".$_POST['des_id']."'";
+        $res=$database->update('crm_owner', $up_arr, $condtn);
+	
+        if($res){
           echo 1;  
         }
         }
-        else {
-            echo 0;
+        
+        if($_POST['status']=="enable_user")
+	{
+	
+        $up_arr=[ 
+            'modified'=>$date,
+            'modified_time'=>$time,
+            'status'=>1
+        ];
+        $condtn="id='".$_POST['enb_id']."'";
+        $res=$database->update('crm_owner', $up_arr, $condtn);
+	
+        if($res){
+          echo 1;  
         }
+        }
+        
 ?>

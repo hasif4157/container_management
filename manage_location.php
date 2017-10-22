@@ -1,6 +1,7 @@
 <?php
 require_once('settings.php');
 include('header.php');
+$database=new database();
 ?>
 
 
@@ -57,12 +58,9 @@ include('header.php');
                         <th scope="col" class="text-center">Sl No.</th>
                         <th scope="col" class="text-center">Name</th>
                         <th scope="col" class="text-center">Phone </th>
-                        <th scope="col" class="text-center">Fax </th>
                         <th scope="col" class="text-center">Email</th>
                         <th scope="col" class="text-center">Contact Person</th>
                         <th scope="col" class="text-center">Contact Person Mobile No.</th>
-                        <th scope="col" class="text-center">City</th>
-                        <th scope="col" class="text-center">Country</th>
                         <th scope="col" class="text-center">Action</th>
                     </tr>
                 </thead>
@@ -70,31 +68,29 @@ include('header.php');
                 <tbody>
                     <?php
                     $slno = 1;
-                    $sql_loc = "SELECT * FROM ex_location ORDER BY id desc";
-                    $qry_loc = mysqli_query($conn, $sql_loc);
-                    while ($row_loc = $qry_loc->fetch_assoc()) {
-                        $id = $row_loc['id'];
+                    $sql_loc = "select * from to_location UNION select * from from_location";
+                    $num_rows=$database->rows($sql_loc);
+                    $row_loc=$database->select_query_array($sql_loc);
+                    if($num_rows>0){
+                    for($i=0;$i<count($row_loc);$i++){
+                        $id = $row_loc[$i]->id;
                         
                         ?>
                     <tr id="delid_<?=$id?>" class="text-center">
                             <td id="delid_<?=$id?>"><?= $slno; ?></td>
-                            <td id="delid_<?=$id?>"><?= $row_loc['loc_name']; ?></td>
-                            <td id="delid_<?=$id?>"><?= $row_loc['loc_phone']; ?></td>
-                            <td id="delid_<?=$id?>"><?= $row_loc['loc_fax']; ?></td>
-                            <td id="delid_<?=$id?>"><?= $row_loc['loc_email']; ?></td>
-                            <td id="delid_<?=$id?>"><?= $row_loc['loc_cp']; ?></td>
-                            <td id="delid_<?=$id?>"><?= $row_loc['loc_cpp']; ?></td>
-                            <td id="delid_<?=$id?>"><?= $row_loc['loc_city']; ?></td>
-                            <td id="delid_<?=$id?>"><?= $row_loc['loc_country']; ?></td>
-                            
+                            <td id="delid_<?=$id?>"><?= $row_loc[$i]->loc_name; ?></td>
+                            <td id="delid_<?=$id?>"><?= $row_loc[$i]->loc_phone; ?></td>
+                            <td id="delid_<?=$id?>"><?= $row_loc[$i]->loc_email; ?></td>
+                            <td id="delid_<?=$id?>"><?= $row_loc[$i]->loc_cp; ?></td>
+                            <td id="delid_<?=$id?>"><?= $row_loc[$i]->loc_cpp; ?></td>
                             <?php
-                                    $sql_orpr = mysqli_query($conn, "SELECT * from crm_owner where id='" .$_SESSION['user_id']. "'");
-                                    $res_orpr = mysqli_fetch_array($sql_orpr);
+                                    $sql_orpr = "SELECT * from crm_owner where id='" .$_SESSION['user_id']. "'";
+                                    $res_orpr = $database->select_query_array($sql_orpr);
                                     $view_or = "disnone";
                                     $edit_or = "disnone";
                                     $delete_or = "disnone";
                                     $privilege_array = '';
-                                    $privilege_explode = explode(",", $res_orpr['privileges']);
+                                    $privilege_explode = explode(",", $res_orpr[0]->privileges);
                                     for ($j = 0; $j <= 44; $j++) {
                                         if (!empty($privilege_explode[$j])) {
                                             if ($privilege_explode[$j] == 27) {
@@ -110,7 +106,7 @@ include('header.php');
                                     }
                                     ?>
                             <td id="delid_<?=$id?>">
-                                <a href="editLoc.php?id=<?=$id;?>" class="delete <?= $view_or?>" id="<?=$id?>">
+                                <a href="editLoc.php?id=<?=$id;?>&loc_type=<?=$row_loc[$i]->loc_type;?>" class="delete <?= $view_or?>" id="<?=$id?>">
                                     <i class="fa fa-edit"></i>
                                 </a>
 
@@ -125,7 +121,8 @@ include('header.php');
 
                         </tr>
                         <?php $slno++;
-                    } ?>
+                    }
+                    }?>
                 </tbody>
             </table>
 </div>

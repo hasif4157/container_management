@@ -1,11 +1,10 @@
 <?php
 require_once('settings.php');
 include('header.php');
-
+$database=new database();
 $edit_id = $_GET['id'];
 $sql_ed = "select * from crm_owner where id=$edit_id";
-$qry_ed = $conn->query($sql_ed);
-$res_ed = $qry_ed->fetch_array();
+$res_ed = $database->select_query_array($sql_ed);
 ?>
 
 
@@ -51,7 +50,7 @@ $res_ed = $qry_ed->fetch_array();
         <!-- BEGIN DASHBOARD STATS 1-->
 
         <div class="row">
-             <form method="POST" action="" accept-charset="UTF-8" class="form-horizontal" id="edit_user" enctype="multipart/form-data">
+             
             <div class="col-md-5">
                 <!-- BEGIN SAMPLE FORM PORTLET-->
                 <div class="portlet light bordered">
@@ -62,13 +61,13 @@ $res_ed = $qry_ed->fetch_array();
                                 <div class="form-group">
                                     <label>User/Computer Name</label>
                                     <div class="input-group">
-                                        <input type="hidden" name="up_id" value="<?=$edit_id?>">
-                                        <input type="text" name="user_name" value="<?=$res_ed['user_name'];?>" class="form-control" placeholder="Enter Name"> </div>
+                                        <input type="hidden" name="up_id" id="up_id" value="<?=$edit_id?>">
+                                        <input type="text" name="user_name" id="user_name" value="<?=$res_ed[0]->user_name;?>" class="form-control" placeholder="Enter Name"> </div>
                                 </div>
                                 <div class="form-group">
                                     <label>Workgroup/Domain Name</label>
                                     <div class="input-group">
-                                        <input type="text" name="domain_name" value="<?=$res_ed['domain_name'];?>" class="form-control" placeholder="Enter Domain Name"> </div>
+                                        <input type="text" name="domain_name" id="domain_name" value="<?=$res_ed[0]->domain_name;?>" class="form-control" placeholder="Enter Domain Name"> </div>
                                 </div>
                                 <div class="form-group">
                                     <label>Email Address</label>
@@ -76,36 +75,39 @@ $res_ed = $qry_ed->fetch_array();
                                         <span class="input-group-addon">
                                             <i class="fa fa-envelope"></i>
                                         </span>
-                                        <input type="text" name="user_email" value="<?=$res_ed['user_email'];?>" class="form-control" placeholder="Email Address"> </div>
+                                        <input type="text" name="user_email" id="user_email" value="<?=$res_ed[0]->user_email;?>" class="form-control" placeholder="Email Address"> </div>
                                 </div>
                      
                                 <div class="form-group">
                                     <label for="exampleInputPassword1">Password</label>
                                     <div class="input-group">
-                                        <input type="password" id="password" name="password" value="<?=$res_ed['password'];?>" class="form-control"  data-toggle="password" style="display: block;">
+                                        <input type="password"  id="password" name="password" value="<?=$res_ed[0]->password;?>" class="form-control"  data-toggle="password" style="display: block;">
                                     </div>
                                 </div>
 
                                 <div class="form-group">
                                     <label for="exampleInputPassword1">Confirm Password</label>
                                     <div class="input-group">
-                                         <input type="password" id="password" name="cpassword" value="<?=$res_ed['password'];?>" class="form-control" data-toggle="password" style="display: block;">
+                                         <input type="password" id="cpassword" name="cpassword" value="<?=$res_ed[0]->password;?>" class="form-control" data-toggle="password" style="display: block;">
                                         
                                     </div>
                                 </div>
 
 
                                 <div class="form-group">
-                                    <label>Employee</label>
-                                    <select class="form-control" name="employee">
+                                    <label>Employee Type</label>
+                                    <select class="form-control" id="emp_type" name="employee">
                                         <option>Select</option>
                                         
                                          <?php
-                                        $sql_emp = mysqli_query($conn, "SELECT * FROM emp_type where id !=''");
-                                        while ($row_emp = mysqli_fetch_array($sql_emp)) {
+                                        $sql_emp = "SELECT * FROM emp_type where id !=''";
+                                        $now_emp=$database->rows($sql_emp);
+                                        $row_emp = $database->select_query_array($sql_emp);
+                                        if($now_emp>0){
+                                        for($i=0;$i<count($row_emp);$i++) {
                                             ?>
-                                            <option value="<?= $row_emp['id'] ?>" <?php echo $row_emp['id'] == $res_ed['employee'] ? 'selected="selected"' : '' ?>><?= $row_emp['emp_type'] ?></option>
-                                        <?php }
+                                            <option value="<?= $row_emp[0]->id ?>" <?php echo $row_emp[0]->id == $res_ed[0]->employee ? 'selected="selected"' : '' ?>><?= $row_emp[0]->emp_type ?></option>
+                                        <?php }}
                                         ?>
                                      
                                     </select>
@@ -113,11 +115,11 @@ $res_ed = $qry_ed->fetch_array();
 
                                 <div class="form-group">
                                     <label>Description</label>
-                                    <textarea class="form-control" name="user_desc" rows="3"><?=$res_ed['user_desc'];?></textarea>
+                                    <textarea class="form-control" id="user_desc" name="user_desc" rows="3"><?=$res_ed[0]->user_desc;?></textarea>
                                 </div>
                             </div>
                             <div class="form-actions">
-                                <button type="submit" class="btn blue">Update</button>
+                                <button type="submit" id="update_user" class="btn blue">Update</button>
                                 <button type="button" class="btn default">Cancel</button>
                             </div>
                         
@@ -134,7 +136,7 @@ $res_ed = $qry_ed->fetch_array();
             <div class="col-md-7">
                 <?php 
 				            $privilege_array='';
-				            $privilege_explode=explode("," , $res_ed['privileges']);
+				            $privilege_explode=explode("," , $res_ed[0]->privileges);
 							
 							$manage_staff='';
 							$manage_user='';
@@ -381,70 +383,70 @@ $res_ed = $qry_ed->fetch_array();
                                     PRIVILEGES:
                                 </div>
                                 <div class="form-field" style="padding:0px;height:30px;">
-                                    <input name="manage_staff" type="checkbox" value="1" <?php echo !empty($manage_staff)?$manage_staff:'';?> />&nbsp;&nbsp;Manage Staff
+                                    <input name="manage_staff" class="edit_prev" type="checkbox" value="1" <?php echo !empty($manage_staff)?$manage_staff:'';?> />&nbsp;&nbsp;Manage Staff
                                 </div>
                                 <div class="form-field" style="padding:0px;height:30px;margin-left:20px;">
-                                    <input name="manage_staff_vw" type="checkbox" value="12" <?php echo !empty($manage_staff_vw)?$manage_staff_vw:'';?> />&nbsp;&nbsp;View
+                                    <input name="manage_staff_vw" class="edit_prev" type="checkbox" value="12" <?php echo !empty($manage_staff_vw)?$manage_staff_vw:'';?> />&nbsp;&nbsp;View
                                 </div>
                                 <div class="form-field" style="padding:0px;height:30px;margin-left:20px;">
-                                    <input name="manage_staff_ed" type="checkbox" value="13" <?php echo !empty($manage_staff_ed)?$manage_staff_ed:'';?> />&nbsp;&nbsp;Edit
+                                    <input name="manage_staff_ed" class="edit_prev" type="checkbox" value="13" <?php echo !empty($manage_staff_ed)?$manage_staff_ed:'';?> />&nbsp;&nbsp;Edit
                                 </div>
                                 <div class="form-field" style="padding:0px;height:30px;margin-left:20px;">
-                                    <input name="manage_staff_dl" type="checkbox" value="14" <?php echo !empty($manage_staff_ed)?$manage_staff_ed:'';?> />&nbsp;&nbsp;Delete
+                                    <input name="manage_staff_dl" class="edit_prev" type="checkbox" value="14" <?php echo !empty($manage_staff_ed)?$manage_staff_ed:'';?> />&nbsp;&nbsp;Delete
                                 </div>
 
 
                                 <div class="form-field" style="padding:0px;height:30px; ">
-                                    <input name="manage_user" type="checkbox" value="2" <?php echo !empty($manage_user)?$manage_user:'';?> />&nbsp;&nbsp;Manage User
+                                    <input name="manage_user" class="edit_prev" type="checkbox" value="2" <?php echo !empty($manage_user)?$manage_user:'';?> />&nbsp;&nbsp;Manage User
                                 </div>
                                 <div class="form-field" style="padding:0px;height:30px;margin-left:20px;">
-                                    <input name="manage_user_vw" type="checkbox" value="15" <?php echo !empty($manage_user_vw)?$manage_user_vw:'';?> />&nbsp;&nbsp;View
+                                    <input name="manage_user_vw" class="edit_prev" type="checkbox" value="15" <?php echo !empty($manage_user_vw)?$manage_user_vw:'';?> />&nbsp;&nbsp;View
                                 </div>
                                 <div class="form-field" style="padding:0px;height:30px;margin-left:20px;">
-                                    <input name="manage_user_ed" type="checkbox" value="16" <?php echo !empty($manage_user_ed)?$manage_user_ed:'';?> />&nbsp;&nbsp;Edit
+                                    <input name="manage_user_ed" class="edit_prev" type="checkbox" value="16" <?php echo !empty($manage_user_ed)?$manage_user_ed:'';?> />&nbsp;&nbsp;Edit
                                 </div>
                                 <div class="form-field" style="padding:0px;height:30px;margin-left:20px;">
-                                    <input name="manage_user_dl" type="checkbox" value="17" <?php echo !empty($manage_user_dl)?$manage_user_dl:'';?> />&nbsp;&nbsp;Delete
+                                    <input name="manage_user_dl" class="edit_prev" type="checkbox" value="17" <?php echo !empty($manage_user_dl)?$manage_user_dl:'';?> />&nbsp;&nbsp;Delete
                                 </div>
 
 
                                 <div class="form-field" style="padding:0px;height:30px; ">
-                                    <input name="manage_agent" type="checkbox" value="3" <?php echo !empty($manage_agent)?$manage_agent:'';?> />&nbsp;&nbsp;Manage Agent
+                                    <input name="manage_agent" class="edit_prev" type="checkbox" value="3" <?php echo !empty($manage_agent)?$manage_agent:'';?> />&nbsp;&nbsp;Manage Agent
                                 </div>
                                 <div class="form-field" style="padding:0px;height:30px;margin-left:20px;">
-                                    <input name="manage_agent_vw" type="checkbox" value="18" <?php echo !empty($manage_agent_vw)?$manage_agent_vw:'';?> />&nbsp;&nbsp;View
+                                    <input name="manage_agent_vw" class="edit_prev" type="checkbox" value="18" <?php echo !empty($manage_agent_vw)?$manage_agent_vw:'';?> />&nbsp;&nbsp;View
                                 </div>
                                 <div class="form-field" style="padding:0px;height:30px;margin-left:20px;">
-                                    <input name="manage_agent_ed" type="checkbox" value="19" <?php echo !empty($manage_agent_ed)?$manage_agent_ed:'';?> />&nbsp;&nbsp;Edit
+                                    <input name="manage_agent_ed" class="edit_prev" type="checkbox" value="19" <?php echo !empty($manage_agent_ed)?$manage_agent_ed:'';?> />&nbsp;&nbsp;Edit
                                 </div>
                                 <div class="form-field" style="padding:0px;height:30px;margin-left:20px;">
-                                    <input name="manage_agent_dl" type="checkbox" value="20" <?php echo !empty($manage_agent_dl)?$manage_agent_dl:'';?> />&nbsp;&nbsp;Delete
+                                    <input name="manage_agent_dl" class="edit_prev" type="checkbox" value="20" <?php echo !empty($manage_agent_dl)?$manage_agent_dl:'';?> />&nbsp;&nbsp;Delete
                                 </div>        
 
                                 <div class="form-field" style="padding:0px;height:30px; ">
-                                    <input name="manage_client" type="checkbox" value="4" <?php echo !empty($manage_client)?$manage_client:'';?> />&nbsp;&nbsp;Manage Client
+                                    <input name="manage_client" class="edit_prev" type="checkbox" value="4" <?php echo !empty($manage_client)?$manage_client:'';?> />&nbsp;&nbsp;Manage Client
                                 </div>
                                 <div class="form-field" style="padding:0px;height:30px;margin-left:20px;">
-                                    <input name="manage_client_vw" type="checkbox" value="21" <?php echo !empty($manage_client_vw)?$manage_client_vw:'';?> />&nbsp;&nbsp;View
+                                    <input name="manage_client_vw" class="edit_prev" type="checkbox" value="21" <?php echo !empty($manage_client_vw)?$manage_client_vw:'';?> />&nbsp;&nbsp;View
                                 </div>
                                 <div class="form-field" style="padding:0px;height:30px;margin-left:20px;">
-                                    <input name="manage_client_ed" type="checkbox" value="22" <?php echo !empty($manage_client_ed)?$manage_client_ed:'';?> />&nbsp;&nbsp;Edit
+                                    <input name="manage_client_ed" class="edit_prev" type="checkbox" value="22" <?php echo !empty($manage_client_ed)?$manage_client_ed:'';?> />&nbsp;&nbsp;Edit
                                 </div>
                                 <div class="form-field" style="padding:0px;height:30px;margin-left:20px;">
-                                    <input name="manage_client_dl" type="checkbox" value="23" <?php echo !empty($manage_client_dl)?$manage_client_dl:'';?> />&nbsp;&nbsp;Delete
+                                    <input name="manage_client_dl" class="edit_prev" type="checkbox" value="23" <?php echo !empty($manage_client_dl)?$manage_client_dl:'';?> />&nbsp;&nbsp;Delete
                                 </div> 
 
                                 <div class="form-field" style="padding:0px;height:30px;">
-                                    <input name="manage_bank" type="checkbox" value="5" <?php echo !empty($manage_bank)?$manage_bank:'';?> />&nbsp;&nbsp;Manage Banks
+                                    <input name="manage_bank" class="edit_prev" type="checkbox" value="5" <?php echo !empty($manage_bank)?$manage_bank:'';?> />&nbsp;&nbsp;Manage Banks
                                 </div>
                                 <div class="form-field" style="padding:0px;height:30px;margin-left:20px;">
-                                    <input name="manage_bank_vw" type="checkbox" value="24" <?php echo !empty($manage_bank_vw)?$manage_bank_vw:'';?> />&nbsp;&nbsp;View
+                                    <input name="manage_bank_vw" class="edit_prev" type="checkbox" value="24" <?php echo !empty($manage_bank_vw)?$manage_bank_vw:'';?> />&nbsp;&nbsp;View
                                 </div>
                                 <div class="form-field" style="padding:0px;height:30px;margin-left:20px;">
-                                    <input name="manage_bank_ed" type="checkbox" value="25" <?php echo !empty($manage_bank_ed)?$manage_bank_ed:'';?> />&nbsp;&nbsp;Edit
+                                    <input name="manage_bank_ed" class="edit_prev" type="checkbox" value="25" <?php echo !empty($manage_bank_ed)?$manage_bank_ed:'';?> />&nbsp;&nbsp;Edit
                                 </div>
                                 <div class="form-field" style="padding:0px;height:30px;margin-left:20px;">
-                                    <input name="manage_bank_dl" type="checkbox" value="26" <?php echo !empty($manage_bank_dl)?$manage_bank_dl:'';?> />&nbsp;&nbsp;Delete
+                                    <input name="manage_bank_dl" class="edit_prev" type="checkbox" value="26" <?php echo !empty($manage_bank_dl)?$manage_bank_dl:'';?> />&nbsp;&nbsp;Delete
                                 </div> 
 
                                 
@@ -457,85 +459,85 @@ $res_ed = $qry_ed->fetch_array();
                         <div class="portlet light bordered">
                             <div class="form-left">
                                 <div class="form-field" style="padding:0px;height:30px; ">
-                                    <input name="manage_location" type="checkbox" value="6" <?php echo !empty($manage_location)?$manage_location:'';?> />&nbsp;&nbsp;Manage Location
+                                    <input name="manage_location" class="edit_prev" type="checkbox" value="6" <?php echo !empty($manage_location)?$manage_location:'';?> />&nbsp;&nbsp;Manage Location
                                 </div>
                                 <div class="form-field" style="padding:0px;height:30px;margin-left:20px;">
-                                    <input name="manage_location_vw" type="checkbox" value="27" <?php echo !empty($manage_location_vw)?$manage_location_vw:'';?> />&nbsp;&nbsp;View
+                                    <input name="manage_location_vw" class="edit_prev" type="checkbox" value="27" <?php echo !empty($manage_location_vw)?$manage_location_vw:'';?> />&nbsp;&nbsp;View
                                 </div>
                                 <div class="form-field" style="padding:0px;height:30px;margin-left:20px;">
-                                    <input name="manage_location_ed" type="checkbox" value="28" <?php echo !empty($manage_location_ed)?$manage_location_ed:'';?> />&nbsp;&nbsp;Edit
+                                    <input name="manage_location_ed" class="edit_prev" type="checkbox" value="28" <?php echo !empty($manage_location_ed)?$manage_location_ed:'';?> />&nbsp;&nbsp;Edit
                                 </div>
                                 <div class="form-field" style="padding:0px;height:30px;margin-left:20px;">
-                                    <input name="manage_location_dl" type="checkbox" value="29" <?php echo !empty($manage_location_dl)?$manage_location_dl:'';?> />&nbsp;&nbsp;Delete
+                                    <input name="manage_location_dl" class="edit_prev" type="checkbox" value="29" <?php echo !empty($manage_location_dl)?$manage_location_dl:'';?> />&nbsp;&nbsp;Delete
                                 </div> 
                                 
                                 
                                 <div class="form-field" style="padding:0px;height:30px; ">
-                                    <input name="manage_container" type="checkbox" value="7" <?php echo !empty($manage_container)?$manage_container:'';?> />&nbsp;&nbsp;Manage Container
+                                    <input name="manage_container" class="edit_prev" type="checkbox" value="7" <?php echo !empty($manage_container)?$manage_container:'';?> />&nbsp;&nbsp;Manage Container
                                 </div>
                                 <div class="form-field" style="padding:0px;height:30px;margin-left:20px;">
-                                    <input name="manage_container_vw" type="checkbox" value="30" <?php echo !empty($manage_container_vw)?$manage_container_vw:'';?> />&nbsp;&nbsp;View
+                                    <input name="manage_container_vw" class="edit_prev" type="checkbox" value="30" <?php echo !empty($manage_container_vw)?$manage_container_vw:'';?> />&nbsp;&nbsp;View
                                 </div>
                                 <div class="form-field" style="padding:0px;height:30px;margin-left:20px;">
-                                    <input name="manage_container_ed" type="checkbox" value="31" <?php echo !empty($manage_container_ed)?$manage_container_ed:'';?> />&nbsp;&nbsp;Edit
+                                    <input name="manage_container_ed" class="edit_prev" type="checkbox" value="31" <?php echo !empty($manage_container_ed)?$manage_container_ed:'';?> />&nbsp;&nbsp;Edit
                                 </div>
                                 <div class="form-field" style="padding:0px;height:30px;margin-left:20px;">
-                                    <input name="manage_container_dl" type="checkbox" value="32" <?php echo !empty($manage_container_dl)?$manage_container_dl:'';?> />&nbsp;&nbsp;Delete
+                                    <input name="manage_container_dl" class="edit_prev" type="checkbox" value="32" <?php echo !empty($manage_container_dl)?$manage_container_dl:'';?> />&nbsp;&nbsp;Delete
                                 </div> 
                                 
                                 
                                 <div class="form-field" style="padding:0px;height:30px; ">
-                                    <input name="manage_orbooking" type="checkbox" value="8" <?php echo !empty($manage_orbooking)?$manage_orbooking:'';?> />&nbsp;&nbsp;Manage Order Bookings
+                                    <input name="manage_orbooking" class="edit_prev" type="checkbox" value="8" <?php echo !empty($manage_orbooking)?$manage_orbooking:'';?> />&nbsp;&nbsp;Manage Order Bookings
                                 </div>
                                 <div class="form-field" style="padding:0px;height:30px;margin-left:20px;">
-                                    <input name="manage_orbooking_vw" type="checkbox" value="33" <?php echo !empty($manage_orbooking_vw)?$manage_orbooking_vw:'';?> />&nbsp;&nbsp;View
+                                    <input name="manage_orbooking_vw" class="edit_prev" type="checkbox" value="33" <?php echo !empty($manage_orbooking_vw)?$manage_orbooking_vw:'';?> />&nbsp;&nbsp;View
                                 </div>
                                 <div class="form-field" style="padding:0px;height:30px;margin-left:20px;">
-                                    <input name="manage_orbooking_ed" type="checkbox" value="34" <?php echo !empty($manage_orbooking_ed)?$manage_orbooking_ed:'';?> />&nbsp;&nbsp;Edit
+                                    <input name="manage_orbooking_ed" class="edit_prev" type="checkbox" value="34" <?php echo !empty($manage_orbooking_ed)?$manage_orbooking_ed:'';?> />&nbsp;&nbsp;Edit
                                 </div>
                                 <div class="form-field" style="padding:0px;height:30px;margin-left:20px;">
-                                    <input name="manage_orbooking_dl" type="checkbox" value="35" <?php echo !empty($manage_orbooking_dl)?$manage_orbooking_dl:'';?> />&nbsp;&nbsp;Delete
+                                    <input name="manage_orbooking_dl" class="edit_prev" type="checkbox" value="35" <?php echo !empty($manage_orbooking_dl)?$manage_orbooking_dl:'';?> />&nbsp;&nbsp;Delete
                                 </div> 
                                 
                                 <div class="form-field" style="padding:0px;height:30px; ">
-                                    <input name="manage_salesinc" type="checkbox" value="9" <?php echo !empty($manage_salesinc)?$manage_salesinc:'';?> />&nbsp;&nbsp;Manage Sales Invoice
+                                    <input name="manage_salesinc" class="edit_prev" type="checkbox" value="9" <?php echo !empty($manage_salesinc)?$manage_salesinc:'';?> />&nbsp;&nbsp;Manage Sales Invoice
                                 </div>
                                 <div class="form-field" style="padding:0px;height:30px;margin-left:20px;">
-                                    <input name="manage_salesinc_vw" type="checkbox" value="36" <?php echo !empty($manage_salesinc_vw)?$manage_salesinc_vw:'';?> />&nbsp;&nbsp;View
+                                    <input name="manage_salesinc_vw" class="edit_prev" type="checkbox" value="36" <?php echo !empty($manage_salesinc_vw)?$manage_salesinc_vw:'';?> />&nbsp;&nbsp;View
                                 </div>
                                 <div class="form-field" style="padding:0px;height:30px;margin-left:20px;">
-                                    <input name="manage_salesinc_ed" type="checkbox" value="37" <?php echo !empty($manage_salesinc_ed)?$manage_salesinc_ed:'';?> />&nbsp;&nbsp;Edit
+                                    <input name="manage_salesinc_ed" class="edit_prev" type="checkbox" value="37" <?php echo !empty($manage_salesinc_ed)?$manage_salesinc_ed:'';?> />&nbsp;&nbsp;Edit
                                 </div>
                                 <div class="form-field" style="padding:0px;height:30px;margin-left:20px;">
-                                    <input name="manage_salesinc_dl" type="checkbox" value="38" <?php echo !empty($manage_salesinc_dl)?$manage_salesinc_dl:'';?> />&nbsp;&nbsp;Delete
+                                    <input name="manage_salesinc_dl" class="edit_prev" type="checkbox" value="38" <?php echo !empty($manage_salesinc_dl)?$manage_salesinc_dl:'';?> />&nbsp;&nbsp;Delete
                                 </div> 
                                 
                                 <div class="form-field" style="padding:0px;height:30px; ">
-                                    <input name="manage_rcpvouch" type="checkbox" value="10" <?php echo !empty($manage_rcpvouch)?$manage_rcpvouch:'';?> />&nbsp;&nbsp;Manage Receipt Voucher
+                                    <input name="manage_rcpvouch" class="edit_prev" type="checkbox" value="10" <?php echo !empty($manage_rcpvouch)?$manage_rcpvouch:'';?> />&nbsp;&nbsp;Manage Receipt Voucher
                                 </div>
                                 <div class="form-field" style="padding:0px;height:30px;margin-left:20px;">
-                                    <input name="manage_rcpvouch_vw" type="checkbox" value="39" <?php echo !empty($manage_rcpvouch_vw)?$manage_rcpvouch_vw:'';?> />&nbsp;&nbsp;View
+                                    <input name="manage_rcpvouch_vw" class="edit_prev" type="checkbox" value="39" <?php echo !empty($manage_rcpvouch_vw)?$manage_rcpvouch_vw:'';?> />&nbsp;&nbsp;View
                                 </div>
                                 <div class="form-field" style="padding:0px;height:30px;margin-left:20px;">
-                                    <input name="manage_rcpvouch_ed" type="checkbox" value="40" <?php echo !empty($manage_rcpvouch_ed)?$manage_rcpvouch_ed:'';?> />&nbsp;&nbsp;Edit
+                                    <input name="manage_rcpvouch_ed" class="edit_prev" type="checkbox" value="40" <?php echo !empty($manage_rcpvouch_ed)?$manage_rcpvouch_ed:'';?> />&nbsp;&nbsp;Edit
                                 </div>
                                 <div class="form-field" style="padding:0px;height:30px;margin-left:20px;">
-                                    <input name="manage_rcpvouch_dl" type="checkbox" value="41" <?php echo !empty($manage_rcpvouch_dl)?$manage_rcpvouch_dl:'';?> />&nbsp;&nbsp;Delete
+                                    <input name="manage_rcpvouch_dl" class="edit_prev" type="checkbox" value="41" <?php echo !empty($manage_rcpvouch_dl)?$manage_rcpvouch_dl:'';?> />&nbsp;&nbsp;Delete
                                 </div> 
                                 
                                 
                                 <div class="form-field" style="padding:0px;height:30px; ">
-                                    <input name="manage_payvouch" type="checkbox" value="11" <?php echo !empty($manage_payvouch)?$manage_payvouch:'';?> />&nbsp;&nbsp;Manage Payment Voucher
+                                    <input name="manage_payvouch" class="edit_prev" type="checkbox" value="11" <?php echo !empty($manage_payvouch)?$manage_payvouch:'';?> />&nbsp;&nbsp;Manage Payment Voucher
                                 </div>
                                 
                                 <div class="form-field" style="padding:0px;height:30px;margin-left:20px;">
-                                    <input name="manage_payvouch_vw" type="checkbox" value="42" <?php echo !empty($manage_payvouch_vw)?$manage_payvouch_vw:'';?> />&nbsp;&nbsp;View
+                                    <input name="manage_payvouch_vw" class="edit_prev" type="checkbox" value="42" <?php echo !empty($manage_payvouch_vw)?$manage_payvouch_vw:'';?> />&nbsp;&nbsp;View
                                 </div>
                                 <div class="form-field" style="padding:0px;height:30px;margin-left:20px;">
-                                    <input name="manage_payvouch_ed" type="checkbox" value="43" <?php echo !empty($manage_payvouch_ed)?$manage_payvouch_ed:'';?> />&nbsp;&nbsp;Edit
+                                    <input name="manage_payvouch_ed" class="edit_prev" type="checkbox" value="43" <?php echo !empty($manage_payvouch_ed)?$manage_payvouch_ed:'';?> />&nbsp;&nbsp;Edit
                                 </div>
                                 <div class="form-field" style="padding:0px;height:30px;margin-left:20px;">
-                                    <input name="manage_payvouch_dl" type="checkbox" value="44" <?php echo !empty($manage_payvouch_dl)?$manage_payvouch_dl:'';?> />&nbsp;&nbsp;Delete
+                                    <input name="manage_payvouch_dl" class="edit_prev" type="checkbox" value="44" <?php echo !empty($manage_payvouch_dl)?$manage_payvouch_dl:'';?> />&nbsp;&nbsp;Delete
                                 </div> 
                                 
                             </div>
@@ -556,12 +558,9 @@ $res_ed = $qry_ed->fetch_array();
 
 
             </div>
-             </form>
+           
         </div>
-        <div id="prefix_1241741341198" class="edit_user custom-alerts alert alert-success fade in" style="display:none;">
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
-            User Data Edited Successfully
-        </div>
+        
         <!-- END DASHBOARD STATS 1-->
 
 
@@ -585,48 +584,92 @@ include('footer.php');
 ?>
 
 <script type="text/javascript">
-$('#edit_user').submit(function (e) {
+    $('#update_user').on('click', function () {
+    var prev_arr=[];
+    $('.edit_prev').each(function(){//iterate each value one by one from class
+        if($(this).is(":checked")){//this will allow checked values to loop
+            prev_arr.push($(this).val());//push the values to array as index array
+        }
+        
+    });
+        var pattern = /^\b[A-Z0-9._%-]+@[A-Z0-9.-]+\.[A-Z]{2,4}\b$/i
+        var user_name = $('#user_name').val();
+        var domain_name = $('#domain_name').val();
+        var user_email = $('#user_email').val();
+        var password = $('#password').val();
+        var emp_type = $('#emp_type').val();
+        var user_desc = $('#user_desc').val();
+        var up_id = $('#up_id').val();
 
-    e.preventDefault();
-    var data = new FormData(this); // <-- 'this' is your form element
-    Lobibox.confirm({
-        iconClass: false,
-        msg: 'Are you sure you want to edit the User Details?',
-        title: 'Edit User Details',
-        callback: function ($this, type, e) {
-            if (type == 'yes') {
-                $('div#divLoading').addClass('show');
-                $.ajax({
-                    url: 'update_users.php'
-                    , data: data
-                    , cache: false
-                    , contentType: false
-                    , processData: false
-                    , type: 'POST'
-                    , success: function (data) {
-                        $('#divLoading').removeClass('show');
-                        if(data == 1){
-                    Lobibox.notify('success', {
-                        delay: false,
-                        sound: true,
-                         closeOnEsc:  window.setTimeout(function(){
-window.location.href = "manage_users.php";
 
-    }, 2000),
-                       
-                        title: 'Success',
-                        msg: 'Success Message : User Edited Successfully' 
+        if (user_name == '') {
+            $('#user_name').css({'border': '1px solid red'});
+            $('#user_name').focus();
+        }
+        else if (!pattern.test(user_email))
+        {
+            $('#user_name').css({'border': 'none'});
+            $('#user_email').css({'border': '1px solid red'});
+            $('#user_email').focus();
+        }
+        else if (password == '') {
+            $('#user_email').css({'border': 'none'});
+            $('#password').css({'border': '1px solid red'});
+            $('#password').focus();
+        }
+        else if (emp_type == '') {
+            $('#password').css({'border': 'none'});
+            $('#emp_type').css({'border': '1px solid red'});
+            $('#emp_type').focus();
+        }
+        else{
+            var json = '';
+            json = json + '{';
+            json = json + '"up_id":"'+up_id+'",';
+            json = json + '"user_name":"'+user_name+'",';
+            json = json + '"domain_name":"'+domain_name+'",';
+            json = json + '"user_email":"'+user_email+'",';
+            json = json + '"password":"'+password+'",';
+            json = json + '"emp_type":"'+emp_type+'",';
+            json = json + '"user_desc":"'+user_desc+'",';
+            json = json + '"privilege":"'+prev_arr.join(',')+'"';//join will combine indexed array as sting, seperated by comma.
+            json = json + '}';
+            
+            Lobibox.confirm({
+            iconClass: false,
+            msg: 'Are you sure you want to edit user details?',
+            title: 'Edit User Details',
+            callback: function ($this, type, e) {
+                if (type == 'yes') {
+                    $.ajax({
+                        url: "process_edit_user.php",
+                        async: true,
+                        type: 'POST',
+                        data: "json=" + encodeURIComponent(json),
+                        success: function (data) {
+                        if (data == 1) {
+                                Lobibox.notify('success', {
+                                    delay: false,
+                                    sound: true,
+                                    closeOnEsc: window.setTimeout(function () {
+                                        window.location.href = "manage_users.php";
+
+                                    }, 2000),
+                                    title: 'Success',
+                                    msg: 'Success Message : User Edited Successfully'
+                                });
+                            }
+                        }
                     });
                 }
-                    }
-                });
             }
+        });
+      
         }
-    });
-    return false;
-});
-</script>
 
+
+    });
+</script>
 </body>
 
 </html>

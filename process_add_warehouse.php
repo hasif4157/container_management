@@ -6,39 +6,31 @@ if(isset($_REQUEST['json'])){
     $json=$_REQUEST['json'];
     $array=json_decode($json, true);
     if($array){
-        
-       $ins_order=[
+    $con=explode(',',$array['container']);
+    $arriv=explode(',',$array['arrival']);
+    $cls=explode(',',$array['closing']);
+    $dest=explode(',',$array['destination']);
+    $whosave=explode(',',$array['whosaved']);
+   
+    for($i=0;$i<count($con);$i++){
+        $con_arr=[
             'created'=>$date,
             'created_time'=>$time,
             'modified'=>$date,
             'modified_time'=>$time,
-            'user_id'=>$array['user_id'],
-            'order_no'=>$array['order_no'],
-            'order_date'=>$array['order_date'],
-            'agent_id'=>$array['agent_id'],
-            'container_id'=>$array['container_id'],
-            'fr_loc'=>$array['fr_loc'],
-            'to_loc'=>$array['to_loc'],
-            'cus_id'=>$array['cus_id'],
-            'bank_id'=>$array['bank_id'],
-            'item_desc'=>$array['item_desc'],
-            'line'=>$array['line'],
-            'or_qty'=>$array['or_qty'],
-            'agn_freight'=>$array['agn_freight'],
-            'comp_freight'=>$array['comp_freight'],
-            'comn_freight'=>$array['comn_freight'],
-            'agn_clearence'=>$array['agn_clearence'],
-            'comp_clearence'=>$array['comp_clearence'],
-            'comn_clearence'=>$array['comn_clearence'],
-            'paid_amt'=>$array['paid_amt']
-            ];
+            'container_no'=>$con[$i],
+            'arrival_date'=>$arriv[$i],
+            'closing_date'=>$cls[$i],
+            'destination'=>$dest[$i],
+            'who_saved'=>$whosave[$i],
+            'status'=>1
+         ];
+        $res=$database->insert(container_list, $con_arr);
         
-        
-      $res=$database->insert('ex_order', $ins_order);
-      if($res){
-          echo 1;
-      }
-       
+    }
+    if($res){
+        echo 1;
+    }
     }
 } 
 
